@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 import unittest
 
 HOST = 'http://localhost:8000'
@@ -20,14 +21,24 @@ class NewVisitorTest(unittest.TestCase):
 
         # 他注意到网页的标题和头部都包含“To-Do”这个词
         self.assertIn('To-Do', self.browser.title)
+        header_text = self.browser.find_element_by_tag_name('h1').text
+        self.assertIn('To-Do', header_text)
         self.fail('finish the test!')
 
         # 应用邀请他输入一个待办事项
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        self.assertEqual(inputbox.get_attribute('placeholder'), 'Enter a to-do item')
 
         # 他在一个文本输入框中输入了“学习数据结构和算法”
+        inputbox.send_keys('学习数据结构和算法')
 
         # 他按回车键后，页面更新了
-        # 待办事项表格中显示了“学习数据结构和算法”
+        # 待办事项表格中显示了“1: 学习数据结构和算法”
+        inputbox.send_keys(Keys.ENTER)
+
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_element_by_tag_name('tr')
+        self.assertTrue(any(row.text == '1: 学习数据结构和算法' for row in rows))
 
         # 页面中又显示了一个文本框，可以输入其他的待办事项
         # 他在文本输入框中输入了“趣谈Linux操作系统”
