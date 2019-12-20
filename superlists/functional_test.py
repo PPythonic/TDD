@@ -23,7 +23,6 @@ class NewVisitorTest(unittest.TestCase):
         self.assertIn('To-Do', self.browser.title)
         header_text = self.browser.find_element_by_tag_name('h1').text
         self.assertIn('To-Do', header_text)
-        self.fail('finish the test!')
 
         # 应用邀请他输入一个待办事项
         inputbox = self.browser.find_element_by_id('id_new_item')
@@ -39,6 +38,7 @@ class NewVisitorTest(unittest.TestCase):
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_element_by_tag_name('tr')
         self.assertTrue(any(row.text == '1: 学习数据结构和算法' for row in rows))
+        self.fail('finish the test!')
 
         # 页面中又显示了一个文本框，可以输入其他的待办事项
         # 他在文本输入框中输入了“趣谈Linux操作系统”
