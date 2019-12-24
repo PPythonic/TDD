@@ -48,8 +48,8 @@ class NewVisitorTest(unittest.TestCase):
         inputbox.send_keys(Keys.ENTER)
 
         # 页面再次更新，他的清单显示了这两个待办事项
-        self.check_for_row_in_list_table('1:学习数据结构和算法')
-        self.check_for_row_in_list_table('2:趣谈Linux操作系统')
+        self.check_for_row_in_list_table('1: 学习数据结构和算法')
+        self.check_for_row_in_list_table('2: 趣谈Linux操作系统')
         self.fail('finish the test!')
 
 
