@@ -40,9 +40,12 @@ class NewVisitorTest(LiveServerTestCase):
         # 他在一个文本输入框中输入了“学习数据结构和算法”
         inputbox.send_keys('学习数据结构和算法')
 
-        # 他按回车键后，页面更新了
+        # 他按回车键后，被带到了一个新的URL
         # 待办事项表格中显示了“1: 学习数据结构和算法”
         inputbox.send_keys(Keys.ENTER)
+        sicong_list_url = self.browser.current_url
+        self.assertRegex(sicong_list_url, '/list/.+')
+        self.check_for_row_in_list_table('1: 学习数据结构和算法')
 
         # 页面中又显示了一个文本框，可以输入其他的待办事项
         # 他在文本输入框中输入了“趣谈Linux操作系统”
@@ -54,12 +57,35 @@ class NewVisitorTest(LiveServerTestCase):
         # 页面再次更新，他的清单显示了这两个待办事项
         self.check_for_row_in_list_table('1: 学习数据结构和算法')
         self.check_for_row_in_list_table('2: 趣谈Linux操作系统')
+
+        # 现在一个叫热狗的新用户访问了网站
+        ## 确保撕葱的信息不会从cookie中泄露出来
+        self.browser.quit()
+        self.browser = webdriver.Chrome()
+
+        # 热狗访问首页，页面中看不到撕葱的的清单
+        self.browser.get(self.live_server_url)
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn('学习数据结构和算法', page_text)
+        self.assertNotIn('趣谈Linux操作系统', page_text)
+
+        # 热狗输入一个新待办事项，新建一个清单
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('霍霍霍霍霍')
+        inputbox.send_keys(Keys.ENTER)
+
+        # 热狗获取了他唯一的一个URL
+        regou_lists_url = self.browser.current_url
+        self.assertRegex(regou_lists_url, '/list/.+')
+        self.assertNotEqual(sicong_list_url, regou_lists_url)
+
+        # 这个页面也没有撕葱的清单
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn('学习数据结构和算法', page_text)
+        self.assertIn('霍霍霍霍霍', page_text)
+
+        # 他很满意，去rap了
         self.fail('finish the test!')
-
-
-        # 撕葱想知道网站是否会记住他的清单
-        # 他看到网站为他生成了一个唯一的url
-        # 而且页面中有一些文字解说这个功能
 
         # 他访问这个url，发现他的待办事项列表还在
         # 他很满意，去炫富了
