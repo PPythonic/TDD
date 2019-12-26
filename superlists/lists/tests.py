@@ -49,7 +49,7 @@ class HomePageTest(TestCase):
         response = home_page(request)
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], '/')
+        self.assertEqual(response['location'], '/list/the_only_list_in_the_world/')
 
     def test_home_page_only_save_items_when_necessary(self):
         request = HttpRequest()
@@ -85,6 +85,18 @@ class ItemModelTest(TestCase):
         second_save_item = saved_items[1]
         self.assertEqual(first_save_item.text, 'The first (ever) list item')
         self.assertEqual(second_save_item.text, 'Item the second')
+
+
+class ListViewTest(TestCase):
+
+    def test_display_all_items(self):
+        Item.objects.create(text='itemey 1')
+        Item.objects.create(text='itemey 2')
+
+        response = self.client.get('/list/the_only_list_in_the_world/')
+
+        self.assertContains(response, 'itemey 1')
+        self.assertContains(response, 'itemey 2')
 
 
 if __name__ == '__main__':
