@@ -19,5 +19,6 @@ from lists import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    re_path('^list/the_only_list_in_the_world/$', views.view_list),
     re_path('^$', views.home_page),
 ]
