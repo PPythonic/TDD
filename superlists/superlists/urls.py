@@ -15,10 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, re_path
-from lists import views
+from lists import views as lists_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    re_path('^list/the_only_list_in_the_world/$', views.view_list),
-    re_path('^$', views.home_page),
+    re_path('^lists/the_only_list_in_the_world/$', lists_views.view_list),
+    re_path('^lists/new$', lists_views.new_list),
+    re_path('^$', lists_views.home_page),
 ]

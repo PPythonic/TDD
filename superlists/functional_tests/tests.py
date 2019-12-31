@@ -44,7 +44,7 @@ class NewVisitorTest(LiveServerTestCase):
         # 待办事项表格中显示了“1: 学习数据结构和算法”
         inputbox.send_keys(Keys.ENTER)
         sicong_list_url = self.browser.current_url
-        self.assertRegex(sicong_list_url, '/list/.+')
+        self.assertRegex(sicong_list_url, '/lists/.+')
         self.check_for_row_in_list_table('1: 学习数据结构和算法')
 
         # 页面中又显示了一个文本框，可以输入其他的待办事项
@@ -76,7 +76,7 @@ class NewVisitorTest(LiveServerTestCase):
 
         # 热狗获取了他唯一的一个URL
         regou_lists_url = self.browser.current_url
-        self.assertRegex(regou_lists_url, '/list/.+')
+        self.assertRegex(regou_lists_url, '/lists/.+')
         self.assertNotEqual(sicong_list_url, regou_lists_url)
 
         # 这个页面也没有撕葱的清单

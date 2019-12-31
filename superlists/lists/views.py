@@ -5,14 +5,15 @@ from lists.models import Item
 
 
 def home_page(request):
-    if request.method == 'POST':
-        new_item_text = request.POST['item_text']
-        Item.objects.create(text=new_item_text)   # .objects.create 是创建新Item对象的简化方式，无需再调用.save()方法
-        return redirect('/list/the_only_list_in_the_world/')
-
     return render(request, 'home.html')
 
 
 def view_list(request):
     items = Item.objects.all()
     return render(request, 'list.html', {'items': items})
+
+
+def new_list(request):
+    new_item_text = request.POST['item_text']
+    Item.objects.create(text=new_item_text)
+    return redirect('/lists/the_only_list_in_the_world/')

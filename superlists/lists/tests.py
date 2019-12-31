@@ -30,33 +30,6 @@ class HomePageTest(TestCase):
     #     expected_html = render_to_string('home.html')
     #     self.assertEqual(response.content.decode(), expected_html)   # decode()把content中的字节转换成Python中的Unicode字符串
 
-    def test_home_page_can_save_a_POST_request(self):
-        request = HttpRequest()
-        request.method = 'POST'
-        request.POST['item_text'] = 'A new list item'
-
-        response = home_page(request)
-
-        self.assertEqual(Item.objects.count(), 1)
-        new_item = Item.objects.first()
-        self.assertEqual(new_item.text, 'A new list item')
-
-    def test_home_page_redirects_after_post(self):
-        request = HttpRequest()
-        request.method = 'POST'
-        request.POST['item_text'] = 'A new list item'
-
-        response = home_page(request)
-
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], '/list/the_only_list_in_the_world/')
-
-    def test_home_page_only_save_items_when_necessary(self):
-        request = HttpRequest()
-        home_page(request)
-
-        self.assertEqual(Item.objects.count(), 0)
-
 
 class ItemModelTest(TestCase):
 
@@ -81,17 +54,33 @@ class ItemModelTest(TestCase):
 class ListViewTest(TestCase):
 
     def test_uses_list_template(self):
-        response = self.client.get('/list/the_only_list_in_the_world/')
+        response = self.client.get('/lists/the_only_list_in_the_world/')
         self.assertTemplateUsed(response, 'list.html')
 
     def test_display_all_items(self):
         Item.objects.create(text='itemey 1')
         Item.objects.create(text='itemey 2')
 
-        response = self.client.get('/list/the_only_list_in_the_world/')
+        response = self.client.get('/lists/the_only_list_in_the_world/')
 
         self.assertContains(response, 'itemey 1')
         self.assertContains(response, 'itemey 2')
+
+
+class NewListTest(TestCase):
+
+    def test_saving_a_post_request(self):
+        self.client.post('/lists/new', data={'item_text': 'A new list item'})   # 使用Django测试客户端重写
+
+        self.assertEqual(Item.objects.count(), 1)
+        new_item = Item.objects.first()
+        self.assertEqual(new_item.text, 'A new list item')
+
+    def test_redirects_after_POST(self):
+        response = self.client.post('/lists/new', data={'item_text': 'A new list item'})
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['location'], '/lists/the_only_list_in_the_world/')
 
 
 if __name__ == '__main__':
